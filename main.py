@@ -1,11 +1,8 @@
 import sys
-import time
-
-from pygrabber.dshow_graph import FilterGraph
 
 from PyQt6.QtWidgets import QApplication, QMainWindow, QPushButton, QVBoxLayout
 from PyQt6.QtGui import QImage, QPixmap
-from PyQt6.QtCore import QRunnable, QThreadPool, pyqtSlot, QEvent
+from PyQt6.QtCore import QRunnable, QThreadPool, pyqtSlot
 
 from app import Ui_MainWindow
 
@@ -30,10 +27,9 @@ class Camera(QPushButton):
         self.clicked.connect(self.change_camera)
 
     def change_camera(self):
-        self.app.worker.is_running = False
-
-        self.app.worker = Worker(self.app.ui.MainVideo, self.camera_id)
-        self.app.threadpool.start(self.app.worker)
+        self.app.workers[self.app.open_camera_id].is_running = False
+        self.app.workers[self.camera_id].is_running = True
+        self.app.open_camera_id = self.camera_id
 
 
 class Worker(QRunnable):
@@ -41,7 +37,7 @@ class Worker(QRunnable):
         super(Worker, self).__init__()
         self.camera_or_file = camera_or_file
         self.video_widget = video_widget
-        self.is_running = True
+        self.is_running = False
 
     @pyqtSlot()
     def run(self):
@@ -50,12 +46,13 @@ class Worker(QRunnable):
     def showing_video(self):
         video_size = self.video_widget.size()
         video = cv2.VideoCapture(self.camera_or_file)
-        while self.is_running:
-            ret, image = video.read()
-            image = cv2.resize(image, (video_size.width(), video_size.height()))
-            frame = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            image = QImage(frame, frame.shape[1], frame.shape[0], frame.strides[0], QImage.Format.Format_RGB888)
-            self.video_widget.setPixmap(QPixmap.fromImage(image))
+        while True:
+            if self.is_running:
+                ret, image = video.read()
+                image = cv2.resize(image, (video_size.width(), video_size.height()))
+                frame = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+                image = QImage(frame, frame.shape[1], frame.shape[0], frame.strides[0], QImage.Format.Format_RGB888)
+                self.video_widget.setPixmap(QPixmap.fromImage(image))
 
 
 class AttentionApp(QMainWindow):
@@ -65,26 +62,25 @@ class AttentionApp(QMainWindow):
         self.ui.setupUi(self)
         self.file_path = 0
         self.buttons = []
+        self.workers = []
+        self.open_camera_id = 0
         self.threadpool = QThreadPool()
-        self.worker = Worker(self.ui.MainVideo, self.file_path)
-        self.worker.autoDelete()
-        self.threadpool.start(self.worker)
         self.add_cameras()
+        self.workers[0].is_running = True
 
     def add_cameras(self):
         cameras_list = AttentionApp.find_cameras()
-        margin = 0
         for i in cameras_list:
             new_camera = Camera(i, self, self.ui.layoutWidget, self.ui.cameras)
+            new_worker = Worker(self.ui.MainVideo, i)
             self.buttons.append(new_camera)
-            print(self.buttons)
-            margin += 30
+            self.workers.append(new_worker)
+            self.threadpool.start(self.workers[i])
 
     @staticmethod
     def find_cameras():
         cameras = []
         camera_number = 0
-
         while cv2.VideoCapture(camera_number).isOpened():
             cameras.append(camera_number)
             camera_number += 1
