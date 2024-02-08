@@ -27,14 +27,14 @@ class Camera(QPushButton):
         self.clicked.connect(self.change_camera)
 
     def change_camera(self):
-        self.app.workers[self.app.open_camera_id].is_running = False
-        self.app.workers[self.camera_id].is_running = True
+        self.app.processes[self.app.open_camera_id].is_running = False
+        self.app.processes[self.camera_id].is_running = True
         self.app.open_camera_id = self.camera_id
 
 
-class Worker(QRunnable):
+class CameraOutputProcess(QRunnable):
     def __init__(self, video_widget, camera_or_file):
-        super(Worker, self).__init__()
+        super(CameraOutputProcess, self).__init__()
         self.camera_or_file = camera_or_file
         self.video_widget = video_widget
         self.is_running = False
@@ -62,20 +62,20 @@ class AttentionApp(QMainWindow):
         self.ui.setupUi(self)
         self.file_path = 0
         self.buttons = []
-        self.workers = []
+        self.processes = []
         self.open_camera_id = 0
         self.threadpool = QThreadPool()
         self.add_cameras()
-        self.workers[0].is_running = True
+        self.processes[0].is_running = True
 
     def add_cameras(self):
         cameras_list = AttentionApp.find_cameras()
         for i in cameras_list:
             new_camera = Camera(i, self, self.ui.layoutWidget, self.ui.cameras)
-            new_worker = Worker(self.ui.MainVideo, i)
+            new_process = CameraOutputProcess(self.ui.MainVideo, i)
             self.buttons.append(new_camera)
-            self.workers.append(new_worker)
-            self.threadpool.start(self.workers[i])
+            self.processes.append(new_process)
+            self.threadpool.start(self.processes[i])
 
     @staticmethod
     def find_cameras():
@@ -84,7 +84,6 @@ class AttentionApp(QMainWindow):
         while cv2.VideoCapture(camera_number).isOpened():
             cameras.append(camera_number)
             camera_number += 1
-        print(cameras)
         return cameras
 
 
