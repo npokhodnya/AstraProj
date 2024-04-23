@@ -7,6 +7,8 @@ from PyQt6.QtGui import QImage, QPixmap
 from PyQt6.QtWidgets import QLabel
 import cv2
 import json_checker
+import json
+from ai import ai
 
 
 class AiHandler(QRunnable):
@@ -17,16 +19,19 @@ class AiHandler(QRunnable):
         self.ai_check_frequency = ai_check_frequency
         self.last_time = time.time()
         self.tasks = []
-        self.tasks_len = len(self.tasks)
         self.is_checking = True
+        self.url = f"http://{self.server_date["server_ip"]}:{self.server_date["server_port"]}/"
 
     def turn_it_image(self, image: ndarray) -> ndarray:
+        if not self.ai_result:
+            return image
+
         annotator = Annotator(image)
         categories = self.ai_result[1]
         ai_data = self.ai_result[0]
 
         for i in ai_data:
-            boxes = i.ai_result
+            boxes = i.boxes
             for box in boxes:
                 b = box.xyxy[0]
                 c = box.cls
@@ -42,12 +47,6 @@ class AiHandler(QRunnable):
         self.ai_check_frequency *= 2
 
     def add_image_to_task_list(self, image: list):
-        time_now = time.time()
-
-        if time_now - self.last_time < self.ai_check_frequency:
-            return
-
-        self.last_time = time_now
         self.tasks.append(image)
 
     def stop_checking(self):
@@ -59,17 +58,15 @@ class AiHandler(QRunnable):
 
     def start_check_loop(self):
         while self.is_checking:
-            if len(self.tasks) > self.tasks_len:
-                self.tasks_len = len(self.tasks)
-                self.check_image(self.tasks[0])
-            elif len(self.tasks) < self.tasks_len:
-                self.tasks_len = len(self.tasks)
+            print(len(self.tasks))
+            if len(self.tasks) > 0:
+                task_id = len(self.tasks) - 1
+                self.check_image(self.tasks[task_id])
+                self.tasks.pop(task_id)
 
-    def check_image(self, image: list):
-        session = requests.session()
-        self.ai_result = session.post(url=self.server_date["server_ip"] + self.server_date["server_ip"],
-                                      data=image)
-        self.tasks.remove(image)
+    def check_image(self, image: ndarray):
+        print("checked")
+        self.ai_result = ai.predict(image)
 
 
 class CameraOutputProcess(QRunnable):
@@ -95,7 +92,7 @@ class CameraOutputProcess(QRunnable):
                 ret, image = video.read()
                 image = cv2.resize(image, (self.video_size.width(), self.video_size.height()))
                 self.ai_handler.add_image_to_task_list(image)
-                self.ai_handler.turn_it_image(image)
+                image = self.ai_handler.turn_it_image(image)
                 frame = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
                 image = QImage(frame, frame.shape[1], frame.shape[0], frame.strides[0], QImage.Format.Format_RGB888)
                 self.video_widget.setPixmap(QPixmap.fromImage(image))

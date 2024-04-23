@@ -15,13 +15,12 @@ class AttentionApp(QMainWindow):
         self.file_path = 0
         self.resize(self.ui.frame.size())
         self.cameras = Cameras()
-        print("added")
         self.cameras.add_cameras(self.ui.main_video, self.ui.cameras)
         self.cameras.start_displaying()
 
     def closeEvent(self, event):
         requests.post(f"http://{self.data["server_ip"]}:{self.data["server_port"]}/stop_server")
-        self.cameras.stop_all_processes()
+        self.cameras.stop_all_cameras()
         event.accept()
 
     def resizeEvent(self, event):

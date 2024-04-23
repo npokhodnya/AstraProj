@@ -2,7 +2,7 @@ from PyQt6.QtWidgets import QLabel, QVBoxLayout
 from PyQt6.QtCore import QThreadPool
 import cv2
 from app.CameraClasses.camera_processes import AiHandler, CameraOutputProcess
-from app.CameraClasses.ui import CameraUi
+from app.CameraClasses.camera_ui import CameraUi
 
 
 class Cameras:
@@ -19,6 +19,7 @@ class Cameras:
             new_camera = CameraUi(i, self.change_main_camera, cameras_layout)
             self.buttons.append(new_camera)
             new_ai_process = AiHandler(1)
+            new_ai_process.to_behind_window()
             self.ai_processes.append(new_ai_process)
             self.threadpool.start(self.ai_processes[i])
             new_camera_process = CameraOutputProcess(main_video, i, self.ai_processes[i])
@@ -41,11 +42,13 @@ class Cameras:
 
     def start_displaying(self):
         self.camera_processes[0].is_running = True
+        self.ai_processes[0].to_main_window()
         self.resize_all_videos()
 
-    def stop_all_processes(self):
-        for process in self.camera_processes:
-            process.process_is_worked = False
+    def stop_all_cameras(self):
+        for i in range(len(self.camera_processes)):
+            self.camera_processes[i].process_is_worked = False
+            self.ai_processes[i].stop_checking()
 
     def resize_all_videos(self):
         for process in self.camera_processes:

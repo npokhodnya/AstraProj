@@ -6,7 +6,7 @@ model_version = "v5"
 model = YOLO(model_path, model_version)
 
 
-def predict(frame: list) -> list:
+def predict(frame) -> list:
     frame = numpy.asarray(frame)
     result = model.predict(source=frame)
     return [result, model.names]

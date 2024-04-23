@@ -20,9 +20,9 @@ class Ui_MainWindow(object):
         MainWindow.setWindowIcon(icon)
         MainWindow.setWindowOpacity(1.0)
         MainWindow.setStyleSheet("background-color: rgb(20, 20, 20);\n"
-"font: 57 8pt \"Ubuntu Medium\";\n"
-"font-size: 18pt;\n"
-"color: rgb(213, 213, 213);")
+                                 "font: 57 8pt \"Ubuntu Medium\";\n"
+                                 "font-size: 18pt;\n"
+                                 "color: rgb(213, 213, 213);")
         MainWindow.setIconSize(QtCore.QSize(50, 50))
         MainWindow.setToolButtonStyle(QtCore.Qt.ToolButtonStyle.ToolButtonIconOnly)
         MainWindow.setDocumentMode(False)
@@ -44,7 +44,7 @@ class Ui_MainWindow(object):
         self.side_bar.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.side_bar.setLayoutDirection(QtCore.Qt.LayoutDirection.LeftToRight)
         self.side_bar.setStyleSheet("border-radius: 17px;\n"
-"background-color: rgb(0, 0, 0);")
+                                    "background-color: rgb(0, 0, 0);")
         self.side_bar.setFrameShape(QtWidgets.QFrame.Shape.StyledPanel)
         self.side_bar.setFrameShadow(QtWidgets.QFrame.Shadow.Raised)
         self.side_bar.setObjectName("side_bar")
@@ -55,13 +55,16 @@ class Ui_MainWindow(object):
         self.cameras.setSpacing(0)
         self.cameras.setObjectName("cameras")
         self.verticalLayout_6.addLayout(self.cameras)
-        spacerItem = QtWidgets.QSpacerItem(20, 791, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Minimum)
+        spacerItem = QtWidgets.QSpacerItem(20, 791, QtWidgets.QSizePolicy.Policy.Minimum,
+                                           QtWidgets.QSizePolicy.Policy.Minimum)
         self.verticalLayout_6.addItem(spacerItem)
         self.horizontalLayout.addWidget(self.side_bar)
-        spacerItem1 = QtWidgets.QSpacerItem(70, 20, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Minimum)
+        spacerItem1 = QtWidgets.QSpacerItem(70, 20, QtWidgets.QSizePolicy.Policy.Minimum,
+                                            QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout.addItem(spacerItem1)
         self.frame = QtWidgets.QFrame(parent=self.main_widget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding,
+                                           QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.frame.sizePolicy().hasHeightForWidth())
@@ -74,7 +77,8 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2.setSpacing(0)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.main_video = QtWidgets.QLabel(parent=self.frame)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding,
+                                           QtWidgets.QSizePolicy.Policy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.main_video.sizePolicy().hasHeightForWidth())
@@ -83,7 +87,8 @@ class Ui_MainWindow(object):
         self.main_video.setObjectName("main_video")
         self.horizontalLayout_2.addWidget(self.main_video)
         self.horizontalLayout.addWidget(self.frame)
-        spacerItem2 = QtWidgets.QSpacerItem(70, 20, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Minimum)
+        spacerItem2 = QtWidgets.QSpacerItem(70, 20, QtWidgets.QSizePolicy.Policy.Minimum,
+                                            QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout.addItem(spacerItem2)
         MainWindow.setCentralWidget(self.main_widget)
 

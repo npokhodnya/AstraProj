@@ -9,7 +9,8 @@ app = FastAPI()
 
 
 @app.post("/")
-def neuralink_processing(data: list) -> list:
+def neuralink_processing(data) -> list:
+    print(data)
     return predict(data)
 
 
