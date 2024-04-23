@@ -1,17 +1,24 @@
 from fastapi import FastAPI
 from ai.ai import predict
+import uvicorn
+import os
+import signal
+
 
 app = FastAPI()
 
 
 @app.post("/")
-def neuralink_processing(data: list):
+def neuralink_processing(data: list) -> list:
     return predict(data)
 
 
+@app.post("/stop_server")
+def stop_server():
+    os.kill(os.getpid(), signal.SIGTERM)
+
+
 def start():
-    import uvicorn
-    print("good")
     uvicorn.run(app, host="127.0.0.1", port=6900)
 
 
