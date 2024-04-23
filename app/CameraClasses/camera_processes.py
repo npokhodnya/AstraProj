@@ -1,5 +1,4 @@
 import time
-import requests
 from numpy import ndarray
 from ultralytics.utils.plotting import Annotator
 from PyQt6.QtCore import QRunnable, pyqtSlot, QSize
@@ -7,7 +6,6 @@ from PyQt6.QtGui import QImage, QPixmap
 from PyQt6.QtWidgets import QLabel
 import cv2
 import json_checker
-import json
 from ai import ai
 
 
@@ -58,14 +56,12 @@ class AiHandler(QRunnable):
 
     def start_check_loop(self):
         while self.is_checking:
-            print(len(self.tasks))
             if len(self.tasks) > 0:
                 task_id = len(self.tasks) - 1
                 self.check_image(self.tasks[task_id])
                 self.tasks.pop(task_id)
 
     def check_image(self, image: ndarray):
-        print("checked")
         self.ai_result = ai.predict(image)
 
 

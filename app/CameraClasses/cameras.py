@@ -28,7 +28,9 @@ class Cameras:
 
     def change_main_camera(self, camera_id: int):
         self.camera_processes[self.open_camera_id].is_running = False
+        self.ai_processes[self.open_camera_id].to_behind_window()
         self.camera_processes[camera_id].is_running = True
+        self.ai_processes[camera_id].to_main_window()
         self.open_camera_id = camera_id
 
     @staticmethod

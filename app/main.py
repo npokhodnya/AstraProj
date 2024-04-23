@@ -19,7 +19,6 @@ class AttentionApp(QMainWindow):
         self.cameras.start_displaying()
 
     def closeEvent(self, event):
-        requests.post(f"http://{self.data["server_ip"]}:{self.data["server_port"]}/stop_server")
         self.cameras.stop_all_cameras()
         event.accept()
 
