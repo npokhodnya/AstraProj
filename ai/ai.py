@@ -1,7 +1,7 @@
 from ultralytics import YOLO
 import numpy
 
-model_path = "C:/Users/lexte/Desktop/AstraProject/ai/best.pt"
+model_path = "D:/AstraProject/AstraProject/ai/best.pt"
 model_version = "v5"
 model = YOLO(model_path, model_version)
 

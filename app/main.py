@@ -17,6 +17,7 @@ class AttentionApp(QMainWindow):
         self.cameras = Cameras()
         self.cameras.add_cameras(self.ui.main_video, self.ui.cameras)
         self.cameras.start_displaying()
+        self.cameras.resize_all_videos()
 
     def closeEvent(self, event):
         self.cameras.stop_all_cameras()

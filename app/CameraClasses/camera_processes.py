@@ -39,10 +39,10 @@ class AiHandler(QRunnable):
         return image
 
     def to_main_window(self):
-        self.ai_check_frequency /= 2
+        self.ai_check_frequency /= 10
 
     def to_behind_window(self):
-        self.ai_check_frequency *= 2
+        self.ai_check_frequency *= 10
 
     def add_image_to_task_list(self, image: list):
         self.tasks.append(image)

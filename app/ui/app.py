@@ -13,10 +13,10 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1200, 820)
-        MainWindow.setMinimumSize(QtCore.QSize(0, 0))
+        MainWindow.setMinimumSize(QtCore.QSize(1200, 820))
         MainWindow.setMaximumSize(QtCore.QSize(16777215, 16777215))
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("images/Logo.svg"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
+        icon.addPixmap(QtGui.QPixmap("./app/ui/images/Logo.svg"), QtGui.QIcon.Mode.Normal, QtGui.QIcon.State.Off)
         MainWindow.setWindowIcon(icon)
         MainWindow.setWindowOpacity(1.0)
         MainWindow.setStyleSheet("background-color: rgb(20, 20, 20);\n"
@@ -85,6 +85,7 @@ class Ui_MainWindow(object):
         self.main_video.setSizePolicy(sizePolicy)
         self.main_video.setText("")
         self.main_video.setObjectName("main_video")
+        self.main_video.setMinimumSize(QtCore.QSize(760, 820))
         self.horizontalLayout_2.addWidget(self.main_video)
         self.horizontalLayout.addWidget(self.frame)
         spacerItem2 = QtWidgets.QSpacerItem(70, 20, QtWidgets.QSizePolicy.Policy.Minimum,
