@@ -18,7 +18,7 @@ class Cameras:
         for i in cameras_list:
             new_camera = CameraUi(i, self.change_main_camera, cameras_layout)
             self.buttons.append(new_camera)
-            new_ai_process = AiHandler(1)
+            new_ai_process = AiHandler(100)
             new_ai_process.to_behind_window()
             self.ai_processes.append(new_ai_process)
             self.threadpool.start(self.ai_processes[i])
@@ -43,9 +43,9 @@ class Cameras:
         return cameras
 
     def start_displaying(self):
+        self.resize_all_videos()
         self.camera_processes[0].is_running = True
         self.ai_processes[0].to_main_window()
-        self.resize_all_videos()
 
     def stop_all_cameras(self):
         for i in range(len(self.camera_processes)):

@@ -10,10 +10,16 @@
     <height>820</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
   <property name="minimumSize">
    <size>
     <width>1200</width>
-    <height>0</height>
+    <height>820</height>
    </size>
   </property>
   <property name="maximumSize">
@@ -36,7 +42,8 @@
    <string notr="true">background-color: rgb(20, 20, 20);
 font: 57 8pt &quot;Ubuntu Medium&quot;;
 font-size: 18pt;
-color: rgb(213, 213, 213);</string>
+color: rgb(213, 213, 213);
+selection-color: rgb(255, 0, 255);</string>
   </property>
   <property name="iconSize">
    <size>

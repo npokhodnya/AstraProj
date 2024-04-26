@@ -5,7 +5,6 @@ from PyQt6.QtCore import QRunnable, pyqtSlot, QSize
 from PyQt6.QtGui import QImage, QPixmap
 from PyQt6.QtWidgets import QLabel
 import cv2
-import json_checker
 from ai import ai
 
 
@@ -13,12 +12,11 @@ class AiHandler(QRunnable):
     def __init__(self, ai_check_frequency: float):
         super(AiHandler, self).__init__()
         self.ai_result = []
-        self.server_date = json_checker.get_data()
         self.ai_check_frequency = ai_check_frequency
         self.last_time = time.time()
         self.tasks = []
         self.is_checking = True
-        self.url = f"http://{self.server_date["server_ip"]}:{self.server_date["server_port"]}/"
+        self.is_on_main_window = False
 
     def turn_it_image(self, image: ndarray) -> ndarray:
         if not self.ai_result:
@@ -39,10 +37,10 @@ class AiHandler(QRunnable):
         return image
 
     def to_main_window(self):
-        self.ai_check_frequency /= 2
+        self.is_on_main_window = True
 
     def to_behind_window(self):
-        self.ai_check_frequency *= 2
+        self.is_on_main_window = False
 
     def add_image_to_task_list(self, image: list):
         self.tasks.append(image)
@@ -56,7 +54,7 @@ class AiHandler(QRunnable):
 
     def start_check_loop(self):
         while self.is_checking:
-            if len(self.tasks) > 0:
+            if len(self.tasks) > 0 and self.is_on_main_window:
                 task_id = len(self.tasks) - 1
                 self.check_image(self.tasks[task_id])
                 self.tasks.pop(task_id)
