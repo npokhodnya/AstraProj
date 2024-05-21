@@ -2,14 +2,11 @@ from PyQt6.QtWidgets import QApplication, QMainWindow
 from app.ui.app import Ui_MainWindow
 from app.CameraClasses.cameras import Cameras
 import sys
-import requests
-import json_checker
 
 
 class AttentionApp(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.data = json_checker.get_data()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.file_path = 0
@@ -33,7 +30,3 @@ def start():
     window = AttentionApp()
     window.show()
     sys.exit(app.exec())
-
-
-if __name__ == "__main__":
-    start()

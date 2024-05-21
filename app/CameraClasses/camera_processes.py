@@ -27,22 +27,22 @@ class AiHandler(QRunnable):
         annotator = Annotator(image)
         categories = self.ai_result[1]
         ai_data = self.ai_result[0]
+
         for i in ai_data:
             boxes = i.boxes
             for box in boxes:
-                boxes = box.xyxy[0]
-                detect_element_id = box.cls
-                print(categories[int(detect_element_id)], boxes)
-                annotator.box_label(boxes, categories[int(detect_element_id)])
+                b = box.xyxy[0]
+                c = box.cls
+                annotator.box_label(b, categories[int(c)])
 
         image = annotator.result()
         return image
 
     def to_main_window(self):
-        self.ai_check_frequency /= 10
+        self.ai_check_frequency /= 2
 
     def to_behind_window(self):
-        self.ai_check_frequency *= 10
+        self.ai_check_frequency *= 2
 
     def add_image_to_task_list(self, image: list):
         self.tasks.append(image)
@@ -86,10 +86,9 @@ class CameraOutputProcess(QRunnable):
         while self.process_is_worked:
             if self.is_running:
                 ret, image = video.read()
-                image = cv2.resize(image, (640, 640))
+                image = cv2.resize(image, (self.video_size.width(), self.video_size.height()))
                 self.ai_handler.add_image_to_task_list(image)
                 image = self.ai_handler.turn_it_image(image)
-                image = cv2.resize(image, (self.video_size.width(), self.video_size.height()))
                 frame = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
                 image = QImage(frame, frame.shape[1], frame.shape[0], frame.strides[0], QImage.Format.Format_RGB888)
                 self.video_widget.setPixmap(QPixmap.fromImage(image))
