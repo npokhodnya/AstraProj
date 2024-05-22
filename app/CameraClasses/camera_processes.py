@@ -5,36 +5,36 @@ from PyQt6.QtCore import QRunnable, pyqtSlot, QSize
 from PyQt6.QtGui import QImage, QPixmap
 from PyQt6.QtWidgets import QLabel
 import cv2
-import json_checker
 from ai import ai
+from app.violation_detector.violation_classes import Violation
+from app.violation_detector.detector import Detector
+from app.ui.warning import Ui_Form
 
 
 class AiHandler(QRunnable):
-    def __init__(self, ai_check_frequency: float):
+    def __init__(self, ai_check_frequency: float, camera_name: str):
         super(AiHandler, self).__init__()
         self.ai_result = []
-        self.server_date = json_checker.get_data()
         self.ai_check_frequency = ai_check_frequency
         self.last_time = time.time()
         self.tasks = []
         self.is_checking = True
-        self.url = f"http://{self.server_date["server_ip"]}:{self.server_date["server_port"]}/"
+        self.detector = Detector()
+        self.camera_name = camera_name
 
     def turn_it_image(self, image: ndarray) -> ndarray:
         if not self.ai_result:
             return image
-
         annotator = Annotator(image)
         categories = self.ai_result[1]
         ai_data = self.ai_result[0]
-
         for i in ai_data:
             boxes = i.boxes
             for box in boxes:
                 b = box.xyxy[0]
+                print(box.xyxy[0])
                 c = box.cls
                 annotator.box_label(b, categories[int(c)])
-
         image = annotator.result()
         return image
 
@@ -63,6 +63,15 @@ class AiHandler(QRunnable):
 
     def check_image(self, image: ndarray):
         self.ai_result = ai.predict(image)
+
+    def check_warning(self):
+        detected_class = self.detector.check_violations(self.ai_result[0])
+        if not detected_class:
+            return
+
+        ui_form = Ui_Form()
+        ui_form.setupUi(ui_form)
+        ui_form.Camera.setText(self.camera_name)
 
 
 class CameraOutputProcess(QRunnable):

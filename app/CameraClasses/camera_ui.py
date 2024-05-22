@@ -16,6 +16,8 @@ class CameraUi(QPushButton):
                            "QPushButton:hover{\n"
                            "    color: rgb(255, 255, 255);\n"
                            "}")
+        icon = QIcon("./ui/images/cam.png")
+        self.setIcon(icon)
         vertical_layout.addWidget(self)
         self.clicked.connect(lambda: function_for_click(self.camera_id))
 

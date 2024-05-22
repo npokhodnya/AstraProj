@@ -15,20 +15,17 @@ class Cameras:
 
     def add_cameras(self, main_video: QLabel, cameras_layout: QVBoxLayout):
         cameras_list = Cameras.find_cameras()
-        print(cameras_list)
-        cameras_list.pop(1)
-        print(cameras_list)
         for i in range(len(cameras_list)):
             new_camera = CameraUi(i, self.change_main_camera, cameras_layout)
             self.buttons.append(new_camera)
-            new_ai_process = AiHandler(100)
+            new_ai_process = AiHandler(100, new_camera.objectName())
             new_ai_process.to_behind_window()
             self.ai_processes.append(new_ai_process)
             self.threadpool.start(self.ai_processes[i])
             new_camera_process = CameraOutputProcess(main_video, i, self.ai_processes[i])
             self.camera_processes.append(new_camera_process)
             self.threadpool.start(self.camera_processes[i])
- 
+
     def change_main_camera(self, camera_id: int):
         self.camera_processes[self.open_camera_id].is_running = False
         self.ai_processes[self.open_camera_id].to_behind_window()
